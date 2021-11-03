@@ -30,18 +30,30 @@ import net.unknowndomain.alea.roll.GenericResult;
  */
 public class YearZeroResults extends GenericResult
 {
-    private final List<SingleResult<Integer>> results;
+    private final List<SingleResult<Integer>> baseResults;
+    private final List<SingleResult<Integer>> gearResults;
+    private final List<SingleResult<Integer>> skillResults;
+    private final List<SingleResult<Integer>> stressResults;
     private int successes = 0;
-    private int complication = 0;
+    private int banes = 0;
     private List<SingleResult<Integer>> successDice = new ArrayList<>();
     private List<SingleResult<Integer>> assistDice = new ArrayList<>();
     private YearZeroResults prev;
     
-    public YearZeroResults(List<SingleResult<Integer>> results)
+    public YearZeroResults(List<SingleResult<Integer>> baseResults, List<SingleResult<Integer>> gearResults, List<SingleResult<Integer>> skillResults, List<SingleResult<Integer>> stressResults)
     {
-        List<SingleResult<Integer>> tmp = new ArrayList<>(results.size());
-        tmp.addAll(results);
-        this.results = Collections.unmodifiableList(tmp);
+        List<SingleResult<Integer>> tmp = new ArrayList<>(baseResults.size());
+        tmp.addAll(baseResults);
+        this.baseResults = Collections.unmodifiableList(tmp);
+        tmp = new ArrayList<>(gearResults.size());
+        tmp.addAll(gearResults);
+        this.gearResults = Collections.unmodifiableList(tmp);
+        tmp = new ArrayList<>(skillResults.size());
+        tmp.addAll(skillResults);
+        this.skillResults = Collections.unmodifiableList(tmp);
+        tmp = new ArrayList<>(stressResults.size());
+        tmp.addAll(stressResults);
+        this.stressResults = Collections.unmodifiableList(tmp);
     }
     
     private void addSuccesses(int value, SingleResult<Integer> ... dice)
@@ -56,7 +68,7 @@ public class YearZeroResults extends GenericResult
     
     public void addComplication()
     {
-        complication ++;
+        banes ++;
     }
     
     public void addCriticalSuccess(SingleResult<Integer> ... dice)
@@ -89,12 +101,7 @@ public class YearZeroResults extends GenericResult
     {
         return successDice;
     }
-
-    public List<SingleResult<Integer>> getResults()
-    {
-        return results;
-    }
-
+    
     public YearZeroResults getPrev()
     {
         return prev;
@@ -110,27 +117,44 @@ public class YearZeroResults extends GenericResult
     {
         String indent = getIndent(indentValue);
         messageBuilder.append(indent).append("Successes: ").append(getSuccesses()).appendNewLine();
-        if (getComplication() > 0)
+        if (getBanes() > 0)
         {
-            messageBuilder.append(indent).append("Complications: ").append(getComplication()).appendNewLine();
+            messageBuilder.append(indent).append("Banes: ").append(getBanes()).appendNewLine();
         }
         if (verbose)
         {
             messageBuilder.append(indent).append("Roll ID: ").append(getUuid()).appendNewLine();
             messageBuilder.append(indent).append("Results: ").append(" [ ");
-            for (SingleResult<Integer> t : getResults())
+            for (SingleResult<Integer> t : getBaseResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
                 messageBuilder.append(t.getValue()).append(") ");
             }
             messageBuilder.append("]\n");
-            messageBuilder.append(indent).append("Assistance Results: ").append(" [ ");
-            for (SingleResult<Integer> t : getAssistDice())
+            messageBuilder.append(indent).append("Gear Results: ").append(" [ ");
+            for (SingleResult<Integer> t : getGearResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
                 messageBuilder.append(t.getValue()).append(") ");
             }
             messageBuilder.append("]\n");
+            messageBuilder.append(indent).append("Skill Results: ").append(" [ ");
+            for (SingleResult<Integer> t : getSkillResults())
+            {
+                messageBuilder.append("( ").append(t.getLabel()).append(" => ");
+                messageBuilder.append(t.getValue()).append(") ");
+            }
+            messageBuilder.append("]\n");
+            if (!stressResults.isEmpty())
+            {
+                messageBuilder.append(indent).append("Stress Results: ").append(" [ ");
+                for (SingleResult<Integer> t : getStressResults())
+                {
+                    messageBuilder.append("( ").append(t.getLabel()).append(" => ");
+                    messageBuilder.append(t.getValue()).append(") ");
+                }
+                messageBuilder.append("]\n");
+            }
             if (prev != null)
             {
                 messageBuilder.append("Prev : {\n");
@@ -140,19 +164,29 @@ public class YearZeroResults extends GenericResult
         }
     }
 
-    public int getComplication()
+    public int getBanes()
     {
-        return complication;
+        return banes;
     }
 
-    public List<SingleResult<Integer>> getAssistDice()
+    public List<SingleResult<Integer>> getBaseResults()
     {
-        return assistDice;
+        return baseResults;
     }
 
-    public void setAssistDice(List<SingleResult<Integer>> assistDice)
+    public List<SingleResult<Integer>> getGearResults()
     {
-        this.assistDice = assistDice;
+        return gearResults;
+    }
+
+    public List<SingleResult<Integer>> getSkillResults()
+    {
+        return skillResults;
+    }
+
+    public List<SingleResult<Integer>> getStressResults()
+    {
+        return stressResults;
     }
 
 }

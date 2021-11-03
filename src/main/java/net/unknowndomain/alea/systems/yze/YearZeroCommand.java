@@ -65,7 +65,7 @@ public class YearZeroCommand extends RpgSystemCommand
             GenericRoll roll;
             if (opt.isPush())
             {
-                roll = null;
+                roll = new YearZeroReroll(opt.getModifiers());
             }
             else
             {

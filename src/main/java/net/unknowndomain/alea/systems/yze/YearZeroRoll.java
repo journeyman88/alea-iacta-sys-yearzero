@@ -17,10 +17,6 @@ package net.unknowndomain.alea.systems.yze;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import net.unknowndomain.alea.random.SingleResult;
 import net.unknowndomain.alea.random.dice.DicePool;
 import net.unknowndomain.alea.random.dice.bag.D6;
 import net.unknowndomain.alea.roll.GenericResult;
@@ -30,14 +26,13 @@ import net.unknowndomain.alea.roll.GenericRoll;
  *
  * @author journeyman
  */
-public class YearZeroRoll implements GenericRoll
+public class YearZeroRoll extends YearZeroBase implements GenericRoll
 {
     
     private final DicePool<D6> basePool;
     private final DicePool<D6> gearPool;
     private final DicePool<D6> skillPool;
     private final DicePool<D6> stressPool;
-    private final Set<YearZeroModifiers> mods;
     
     public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, YearZeroModifiers ... mod)
     {
@@ -46,11 +41,7 @@ public class YearZeroRoll implements GenericRoll
     
     public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, Collection<YearZeroModifiers> mod)
     {
-        this.mods = new HashSet<>();
-        if (mod != null)
-        {
-            this.mods.addAll(mod);
-        }
+        super(mod);
         int base = 0;
         if (baseDice != null)
         {
@@ -94,8 +85,7 @@ public class YearZeroRoll implements GenericRoll
     @Override
     public GenericResult getResult()
     {
-//        results.setVerbose(mods.contains(YearZeroModifiers.VERBOSE));
-        return null;
+        return buildResults(this.basePool.getResults(), this.gearPool.getResults(), this.skillPool.getResults(), this.stressPool.getResults());
     }
     
     
