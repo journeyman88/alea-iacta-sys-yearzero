@@ -49,7 +49,7 @@ public class YearZeroReroll extends YearZeroBase implements StatefulRoll
     {
         YearZeroResults results = prev;
         YearZeroResults results2 = null;
-        if (mods.contains(YearZeroModifiers.PUSH) && (results.getPrev() == null) )
+        if (mods.contains(YearZeroModifiers.PUSH) && (results.getPrev() == null) && (!results.isPanic()) )
         {
             List<SingleResult<Integer>> base = new ArrayList<>();
             int baseCount = 0;

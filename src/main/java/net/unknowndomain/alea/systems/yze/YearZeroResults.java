@@ -34,10 +34,12 @@ public class YearZeroResults extends GenericResult
     private final List<SingleResult<Integer>> gearResults;
     private final List<SingleResult<Integer>> skillResults;
     private final List<SingleResult<Integer>> stressResults;
+    private SingleResult<Integer> panicResult;
     private int successes = 0;
-    private int banes = 0;
-    private List<SingleResult<Integer>> successDice = new ArrayList<>();
-    private List<SingleResult<Integer>> assistDice = new ArrayList<>();
+    private int baseBanes = 0;
+    private int gearBanes = 0;
+    private int stressBanes = 0;
+    private boolean panic = false;
     private YearZeroResults prev;
     
     public YearZeroResults(List<SingleResult<Integer>> baseResults, List<SingleResult<Integer>> gearResults, List<SingleResult<Integer>> skillResults, List<SingleResult<Integer>> stressResults)
@@ -56,50 +58,29 @@ public class YearZeroResults extends GenericResult
         this.stressResults = Collections.unmodifiableList(tmp);
     }
     
-    private void addSuccesses(int value, SingleResult<Integer> ... dice)
+    public void addSuccess()
     {
-        this.addSuccesses(value, Arrays.asList(dice));
+        successes++;
     }
     
-    public void addSuccess(SingleResult<Integer> ... dice)
+    public void addBaseBane()
     {
-        addSuccesses(1, dice);
+        baseBanes ++;
     }
     
-    public void addComplication()
+    public void addGearBane()
     {
-        banes ++;
+        gearBanes ++;
     }
     
-    public void addCriticalSuccess(SingleResult<Integer> ... dice)
+    public void addStressBane()
     {
-        addSuccesses(2, dice);
-    }
-    
-    private void addSuccesses(int value, Collection<SingleResult<Integer>> dice)
-    {
-        successes += value;
-        successDice.addAll(dice);
-    }
-    
-    public void addSuccess(Collection<SingleResult<Integer>> dice)
-    {
-        addSuccesses(1, dice);
-    }
-    
-    public void addCriticalSuccess(Collection<SingleResult<Integer>> dice)
-    {
-        addSuccesses(2, dice);
+        stressBanes ++;
     }
 
     public int getSuccesses()
     {
         return successes;
-    }
-
-    public List<SingleResult<Integer>> getSuccessDice()
-    {
-        return successDice;
     }
     
     public YearZeroResults getPrev()
@@ -119,7 +100,20 @@ public class YearZeroResults extends GenericResult
         messageBuilder.append(indent).append("Successes: ").append(getSuccesses()).appendNewLine();
         if (getBanes() > 0)
         {
-            messageBuilder.append(indent).append("Banes: ").append(getBanes()).appendNewLine();
+            messageBuilder.append(indent).append("Banes: ").append(getBanes());
+            messageBuilder.append("( Base: ").append(getBaseBanes());
+            messageBuilder.append(" Gear: ").append(getGearBanes());
+            if (!stressResults.isEmpty())
+            {
+                messageBuilder.append(" Stress: ").append(getStressBanes());
+            }
+            messageBuilder.append(" )").appendNewLine();
+        }
+        if (panic)
+        {
+            messageBuilder.append(indent).append("Panic roll triggered: ");
+            messageBuilder.append("( ").append(panicResult.getLabel()).append(" => ");
+            messageBuilder.append(panicResult.getValue()).append(" )").appendNewLine();
         }
         if (verbose)
         {
@@ -164,9 +158,9 @@ public class YearZeroResults extends GenericResult
         }
     }
 
-    public int getBanes()
+    public int getGearBanes()
     {
-        return banes;
+        return gearBanes;
     }
 
     public List<SingleResult<Integer>> getBaseResults()
@@ -187,6 +181,41 @@ public class YearZeroResults extends GenericResult
     public List<SingleResult<Integer>> getStressResults()
     {
         return stressResults;
+    }
+
+    public boolean isPanic()
+    {
+        return panic;
+    }
+
+    public void setPanic(boolean panic)
+    {
+        this.panic = panic;
+    }
+
+    public SingleResult<Integer> getPanicResult()
+    {
+        return panicResult;
+    }
+
+    public void setPanicResult(SingleResult<Integer> panicResult)
+    {
+        this.panicResult = panicResult;
+    }
+
+    public int getBaseBanes()
+    {
+        return baseBanes;
+    }
+
+    public int getStressBanes()
+    {
+        return stressBanes;
+    }
+
+    public int getBanes()
+    {
+        return baseBanes + gearBanes + stressBanes;
     }
 
 }
