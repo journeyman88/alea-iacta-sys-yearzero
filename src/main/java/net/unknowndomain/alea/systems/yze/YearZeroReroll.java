@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import net.unknowndomain.alea.random.SingleResult;
 import net.unknowndomain.alea.random.dice.DicePool;
-import net.unknowndomain.alea.random.dice.bag.D10;
+import net.unknowndomain.alea.random.dice.bag.D6;
 import net.unknowndomain.alea.roll.GenericResult;
 import net.unknowndomain.alea.roll.StatefulRoll;
 
@@ -51,12 +51,66 @@ public class YearZeroReroll extends YearZeroBase implements StatefulRoll
         YearZeroResults results2 = null;
         if (mods.contains(YearZeroModifiers.PUSH) && (results.getPrev() == null) )
         {
-            List<SingleResult<Integer>> res = new ArrayList<>();
+            List<SingleResult<Integer>> base = new ArrayList<>();
+            int baseCount = 0;
+            for (SingleResult<Integer> pr : results.getBaseResults())
+            {
+                if ((pr.getValue() == 1) || (pr.getValue() >= 6))
+                {
+                    base.add(pr);
+                }
+                else
+                {
+                    baseCount++;
+                }
+            }
+            base.addAll(new DicePool<>(D6.INSTANCE, baseCount).getResults());
+            List<SingleResult<Integer>> gear = new ArrayList<>();
+            int gearCount = 0;
+            for (SingleResult<Integer> pr : results.getGearResults())
+            {
+                if ((pr.getValue() == 1) || (pr.getValue() >= 6))
+                {
+                    gear.add(pr);
+                }
+                else
+                {
+                    gearCount++;
+                }
+            }
+            gear.addAll(new DicePool<>(D6.INSTANCE, gearCount).getResults());
+            List<SingleResult<Integer>> skill = new ArrayList<>();
+            int skillCount = 0;
+            for (SingleResult<Integer> pr : results.getSkillResults())
+            {
+                if (pr.getValue() >= 6)
+                {
+                    skill.add(pr);
+                }
+                else
+                {
+                    skillCount++;
+                }
+            }
+            skill.addAll(new DicePool<>(D6.INSTANCE, skillCount).getResults());
+            List<SingleResult<Integer>> stress = new ArrayList<>();
+            int stressCount = 0;
+            for (SingleResult<Integer> pr : results.getStressResults())
+            {
+                if ((pr.getValue() == 1) || (pr.getValue() >= 6))
+                {
+                    stress.add(pr);
+                }
+                else
+                {
+                    stressCount++;
+                }
+            }
+            stress.addAll(new DicePool<>(D6.INSTANCE, stressCount).getResults());
             results2 = results;
-            results = buildResults(res, res, res, res);
+            results = buildResults(base, gear, skill, stress);
+            results.setPrev(results2);
         }
-        results.setPrev(results2);
-        results.setVerbose(mods.contains(YearZeroModifiers.VERBOSE));
         return results;
     }
     

@@ -37,6 +37,8 @@ public abstract class YearZeroBase
     
     protected YearZeroResults buildResults(List<SingleResult<Integer>> baseResult, List<SingleResult<Integer>> gearResult, List<SingleResult<Integer>> skillResult, List<SingleResult<Integer>> stressResult)
     {
-        return null;
+        YearZeroResults results = new YearZeroResults(baseResult, gearResult, skillResult, stressResult);
+        results.setVerbose(mods.contains(YearZeroModifiers.VERBOSE));
+        return results;
     }
 }
