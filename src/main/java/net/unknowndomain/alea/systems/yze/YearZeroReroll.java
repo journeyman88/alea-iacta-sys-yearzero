@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import net.unknowndomain.alea.random.SingleResult;
 import net.unknowndomain.alea.random.dice.DicePool;
 import net.unknowndomain.alea.random.dice.bag.D6;
@@ -34,14 +35,14 @@ public class YearZeroReroll extends YearZeroBase implements StatefulRoll
     
     private YearZeroResults prev;
     
-    public YearZeroReroll(YearZeroModifiers ... mod)
+    public YearZeroReroll(Locale lang, YearZeroModifiers ... mod)
     {
-        this(Arrays.asList(mod));
+        this(lang, Arrays.asList(mod));
     }
     
-    public YearZeroReroll(Collection<YearZeroModifiers> mod)
+    public YearZeroReroll(Locale lang, Collection<YearZeroModifiers> mod)
     {
-        super(mod);
+        super(lang, mod);
     }
     
     @Override

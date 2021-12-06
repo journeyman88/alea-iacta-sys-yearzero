@@ -18,6 +18,7 @@ package net.unknowndomain.alea.systems.yze;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import net.unknowndomain.alea.random.SingleResult;
 import net.unknowndomain.alea.random.dice.bag.D6;
@@ -29,11 +30,13 @@ import net.unknowndomain.alea.random.dice.bag.D6;
 public abstract class YearZeroBase
 {
     protected final Set<YearZeroModifiers> mods;
+    private final Locale lang;
 
-    public YearZeroBase(Collection<YearZeroModifiers> mod)
+    public YearZeroBase(Locale lang, Collection<YearZeroModifiers> mod)
     {
         this.mods = new HashSet<>();
         this.mods.addAll(mod);
+        this.lang = lang;
     }
     
     protected YearZeroResults buildResults(List<SingleResult<Integer>> baseResult, List<SingleResult<Integer>> gearResult, List<SingleResult<Integer>> skillResult, List<SingleResult<Integer>> stressResult)
@@ -99,6 +102,7 @@ public abstract class YearZeroBase
             panicRoll = new SingleResult<>(tmp.getLabel() + "+" + stressResult.size(), tmp.getValue() + stressResult.size());
             results.setPanicResult(panicRoll);
         }
+        results.setLang(lang);
         return results;
     }
 }

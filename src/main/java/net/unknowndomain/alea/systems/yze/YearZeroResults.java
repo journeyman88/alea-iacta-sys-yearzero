@@ -16,20 +16,20 @@
 package net.unknowndomain.alea.systems.yze;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import net.unknowndomain.alea.messages.MsgBuilder;
 import net.unknowndomain.alea.random.SingleResult;
-import net.unknowndomain.alea.roll.GenericResult;
+import net.unknowndomain.alea.roll.LocalizedResult;
 
 /**
  *
  * @author journeyman
  */
-public class YearZeroResults extends GenericResult
+public class YearZeroResults extends LocalizedResult
 {
+    private final static String BUNDLE_NAME = "net.unknowndomain.alea.systems.yze.RpgSystemBundle";
+    
     private final List<SingleResult<Integer>> baseResults;
     private final List<SingleResult<Integer>> gearResults;
     private final List<SingleResult<Integer>> skillResults;
@@ -97,42 +97,42 @@ public class YearZeroResults extends GenericResult
     protected void formatResults(MsgBuilder messageBuilder, boolean verbose, int indentValue)
     {
         String indent = getIndent(indentValue);
-        messageBuilder.append(indent).append("Successes: ").append(getSuccesses()).appendNewLine();
+        messageBuilder.append(indent).append(translate("yze.results.successes",getSuccesses())).appendNewLine();
         if (getBanes() > 0)
         {
-            messageBuilder.append(indent).append("Banes: ").append(getBanes());
-            messageBuilder.append("( Base: ").append(getBaseBanes());
-            messageBuilder.append(" Gear: ").append(getGearBanes());
+            messageBuilder.append(indent).append(translate("yze.results.banes",getBanes()));
+            messageBuilder.append("( ").append((translate("yze.results.base",getBaseBanes())));
+            messageBuilder.append(" ").append(translate("yze.results.gear",getGearBanes()));
             if (!stressResults.isEmpty())
             {
-                messageBuilder.append(" Stress: ").append(getStressBanes());
+                messageBuilder.append(" ").append(translate("yze.results.stress",getStressBanes()));
             }
             messageBuilder.append(" )").appendNewLine();
         }
         if (panic)
         {
-            messageBuilder.append(indent).append("Panic roll triggered: ");
+            messageBuilder.append(indent).append(translate("yze.results.panicRoll"));
             messageBuilder.append("( ").append(panicResult.getLabel()).append(" => ");
             messageBuilder.append(panicResult.getValue()).append(" )").appendNewLine();
         }
         if (verbose)
         {
             messageBuilder.append(indent).append("Roll ID: ").append(getUuid()).appendNewLine();
-            messageBuilder.append(indent).append("Results: ").append(" [ ");
+            messageBuilder.append(indent).append(translate("yze.results.baseResults")).append(" [ ");
             for (SingleResult<Integer> t : getBaseResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
                 messageBuilder.append(t.getValue()).append(") ");
             }
             messageBuilder.append("]\n");
-            messageBuilder.append(indent).append("Gear Results: ").append(" [ ");
+            messageBuilder.append(indent).append(translate("yze.results.gearResults")).append(" [ ");
             for (SingleResult<Integer> t : getGearResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
                 messageBuilder.append(t.getValue()).append(") ");
             }
             messageBuilder.append("]\n");
-            messageBuilder.append(indent).append("Skill Results: ").append(" [ ");
+            messageBuilder.append(indent).append(translate("yze.results.skillResults")).append(" [ ");
             for (SingleResult<Integer> t : getSkillResults())
             {
                 messageBuilder.append("( ").append(t.getLabel()).append(" => ");
@@ -141,7 +141,7 @@ public class YearZeroResults extends GenericResult
             messageBuilder.append("]\n");
             if (!stressResults.isEmpty())
             {
-                messageBuilder.append(indent).append("Stress Results: ").append(" [ ");
+                messageBuilder.append(indent).append(translate("yze.results.stressResults")).append(" [ ");
                 for (SingleResult<Integer> t : getStressResults())
                 {
                     messageBuilder.append("( ").append(t.getLabel()).append(" => ");
@@ -151,7 +151,7 @@ public class YearZeroResults extends GenericResult
             }
             if (prev != null)
             {
-                messageBuilder.append("Prev : {\n");
+                messageBuilder.append(translate("yze.results.prevResults")).append("{\n");
                 prev.formatResults(messageBuilder, verbose, indentValue + 4);
                 messageBuilder.append("}\n");
             }
@@ -216,6 +216,12 @@ public class YearZeroResults extends GenericResult
     public int getBanes()
     {
         return baseBanes + gearBanes + stressBanes;
+    }
+
+    @Override
+    protected String getBundleName()
+    {
+        return BUNDLE_NAME;
     }
 
 }

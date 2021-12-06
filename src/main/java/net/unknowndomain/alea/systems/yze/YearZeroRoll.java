@@ -17,6 +17,7 @@ package net.unknowndomain.alea.systems.yze;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 import net.unknowndomain.alea.random.dice.DicePool;
 import net.unknowndomain.alea.random.dice.bag.D6;
 import net.unknowndomain.alea.roll.GenericResult;
@@ -34,14 +35,14 @@ public class YearZeroRoll extends YearZeroBase implements GenericRoll
     private final DicePool<D6> skillPool;
     private final DicePool<D6> stressPool;
     
-    public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, YearZeroModifiers ... mod)
+    public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, Locale lang, YearZeroModifiers ... mod)
     {
-        this(baseDice, gearDice, skillDice, stressDice, modifier, Arrays.asList(mod));
+        this(baseDice, gearDice, skillDice, stressDice, modifier, lang, Arrays.asList(mod));
     }
     
-    public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, Collection<YearZeroModifiers> mod)
+    public YearZeroRoll(Integer baseDice, Integer gearDice, Integer skillDice, Integer stressDice, Integer modifier, Locale lang, Collection<YearZeroModifiers> mod)
     {
-        super(mod);
+        super(lang, mod);
         int base = 0;
         if (baseDice != null)
         {
